@@ -105,3 +105,11 @@ body{
     -moz-text-fill-color: transparent;
     
   }
+  .timer_count{
+    height: 50px;
+    span{
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+    }
+  }

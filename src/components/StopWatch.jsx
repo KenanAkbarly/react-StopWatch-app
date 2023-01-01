@@ -306,42 +306,51 @@
 
 
 
-
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
+import reducer from '../Reducer'
 import './StopWatch.scss'
+
 const StopWatch = () => {
-    const [time,setTime] = useState(0)
-    const [start,setStart] = useState(false)
-
-useEffect(()=>{
-    let interval;
-if(start){
-    interval = setInterval(()=>{
-        setTime(prevTime=>prevTime + 10)
-    },10)
-}else{
-    clearInterval(interval);
-
-}
-return ()=>clearInterval(interval)
-},[start])
+  const [state, dispatch] = useReducer(reducer, {
+    time: 0,
+    start: false,
+  })
+  useEffect(() => {
+    let interval
+    if (state.start) {
+      interval = setInterval(() => {
+        state.time += 10
+        dispatch({ type: 'START' })
+      }, 10)
+    } else {
+      console.log(state.time)
+      clearInterval(interval)
+    }
+    return () => clearInterval(interval)
+  })
   return (
-    <div className='timer_body'>
-        <h1>StopWatch</h1>
-        <div className='timer_bottom'>
-        <div className='timer_count'>
-            <span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}:</span>
-            <span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}:</span>
-            <span>{('0' + ((time / 10) % 100)).slice(-2)}</span>
+    <div className="timer_body">
+      <h1>StopWatch</h1>
+      <div className="timer_bottom">
+        <div className="timer_count">
+          <span>
+            {('0' + Math.floor((state.time / 60000) % 60)).slice(-2)}:
+          </span>
+          <span>{('0' + Math.floor((state.time / 1000) % 60)).slice(-2)}:</span>
+          <span>{('0' + ((state.time / 10) % 100)).slice(-2)}</span>
         </div>
-        <div className='btns'>
-            <button onClick={()=>setStart(true)}>Start</button>
-            <button onClick={()=>setStart(false)}>Stop</button>
-            <button onClick={()=>{setTime(0); setStart(false)}}>Reset</button>
+        <div className="btns">
+          <button onClick={() => dispatch({ type: 'START' })}>Start</button>
+          <button onClick={() => dispatch({ type: 'STOP' })}>Stop</button>
+          <button
+            onClick={() => {
+              dispatch({ type: 'RESET' })
+            }}
+          >
+            Reset
+          </button>
         </div>
-        </div>
-     
-
+      </div>
     </div>
   )
 }
